@@ -1,102 +1,94 @@
 package com.ayubyusuf.cloudvendorapi.service.impl;
 
+import com.ayubyusuf.cloudvendorapi.exception.CloudVendorNotFoundException;
 import com.ayubyusuf.cloudvendorapi.model.CloudVendor;
 import com.ayubyusuf.cloudvendorapi.repository.CloudVendorRepository;
-import com.ayubyusuf.cloudvendorapi.service.CloudVendorService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Answers;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
+import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class CloudVendorServiceImplTest {
 
-    AutoCloseable autoCloseable;
-    CloudVendor cloudVendor;
     @Mock
     private CloudVendorRepository cloudVendorRepository;
-    private CloudVendorService cloudVendorService;
+
+    @InjectMocks
+    private CloudVendorServiceImpl cloudVendorService;
+
+    private CloudVendor cloudVendor;
 
     @BeforeEach
     void setUp() {
-        autoCloseable = MockitoAnnotations.openMocks(this);
-        cloudVendorService = new CloudVendorServiceImpl(cloudVendorRepository);
         cloudVendor = new CloudVendor("1", "Amazon", "USA", "xxxxx");
     }
 
-    @AfterEach
-    void tearDown() throws Exception {
-        autoCloseable.close();
+    @Test
+    void shouldCreateCloudVendor() {
+        when(cloudVendorRepository.save(any())).thenReturn(cloudVendor);
+        String response = cloudVendorService.createCloudVendor(cloudVendor);
+        assertThat(response).isEqualTo("Success");
+        verify(cloudVendorRepository, times(1)).save(cloudVendor);
     }
 
     @Test
-    void testCreateCloudVendor() {
-        mock(CloudVendor.class);
-        mock(CloudVendorRepository.class);
-
-        when(cloudVendorRepository.save(cloudVendor)).thenReturn(cloudVendor);
-        assertThat(cloudVendorService.createCloudVendor(cloudVendor)).isEqualTo("Success");
-
+    void shouldUpdateCloudVendor() {
+        when(cloudVendorRepository.save(any())).thenReturn(cloudVendor);
+        String response = cloudVendorService.updateCloudVendor(cloudVendor);
+        assertThat(response).isEqualTo("Success");
+        verify(cloudVendorRepository).save(cloudVendor);
     }
 
     @Test
-    void testUpdateCloudVendor() {
-        mock(CloudVendor.class);
-        mock(CloudVendorRepository.class);
-
-        when(cloudVendorRepository.save(cloudVendor)).thenReturn(cloudVendor);
-        assertThat(cloudVendorService.updateCloudVendor(cloudVendor)).isEqualTo("Success");
+    void shouldDeleteCloudVendor_whenVendorExists() {
+        when(cloudVendorRepository.existsById("1")).thenReturn(true);
+        doNothing().when(cloudVendorRepository).deleteById("1");
+        String response = cloudVendorService.deleteCloudVendor("1");
+        assertThat(response).isEqualTo("Success");
+        verify(cloudVendorRepository).deleteById("1");
     }
 
     @Test
-    void testDeleteCloudVendor() {
-        mock(CloudVendor.class);
-        mock(CloudVendorRepository.class, Mockito.CALLS_REAL_METHODS);
+    void shouldNotDeleteCloudVendor_whenVendorDoesNotExist() {
+        when(cloudVendorRepository.existsById("1")).thenReturn(false);
 
-        doAnswer(Answers.CALLS_REAL_METHODS).when(cloudVendorRepository).deleteById(any());
-        assertThat(cloudVendorService.deleteCloudVendor("1")).isEqualTo("Success");
+        Exception exception = assertThrows(CloudVendorNotFoundException.class, () -> cloudVendorService.deleteCloudVendor("1"));
+
+        String expectedMessage = "Cloud Vendor with ID: 1 does not exist.";
+        String actualMessage = exception.getMessage();
+        assertTrue(actualMessage.contains(expectedMessage));
+
+        verify(cloudVendorRepository, never()).deleteById("1");
+    }
+
+
+    @Test
+    void shouldGetCloudVendor() {
+        when(cloudVendorRepository.findById("1")).thenReturn(Optional.of(cloudVendor));
+        CloudVendor foundVendor = cloudVendorService.getCloudVendor("1");
+        assertThat(foundVendor.getVendorName()).isEqualTo(cloudVendor.getVendorName());
     }
 
     @Test
-    void testGetCloudVendor() {
-        mock(CloudVendor.class);
-        mock(CloudVendorRepository.class);
-
-        when(cloudVendorRepository.findById("1")).thenReturn(Optional.ofNullable(cloudVendor));
-
-        assertThat(cloudVendorService.getCloudVendor("1").getVendorName()).isEqualTo(cloudVendor.getVendorName());
+    void shouldGetAllCloudVendors() {
+        when(cloudVendorRepository.findAll()).thenReturn(Collections.singletonList(cloudVendor));
+        assertThat(cloudVendorService.getAllCloudVendors()).containsExactly(cloudVendor);
     }
 
     @Test
-    void testGetByVendorName() {
-        mock(CloudVendor.class);
-        mock(CloudVendorRepository.class);
-
-        when(cloudVendorRepository.findByVendorName("Amazon")).thenReturn(new ArrayList<CloudVendor>(Collections.singleton(cloudVendor)));
-
-        assertThat(cloudVendorService.getByVendorName("Amazon").get(0).getVendorId()).isEqualTo(cloudVendor.getVendorId());
+    void shouldGetByVendorName() {
+        when(cloudVendorRepository.findByVendorName("Amazon")).thenReturn(Collections.singletonList(cloudVendor));
+        assertThat(cloudVendorService.getByVendorName("Amazon")).containsExactly(cloudVendor);
     }
-
-    @Test
-    void testGetAllCloudVendors() {
-        mock(CloudVendor.class);
-        mock(CloudVendorRepository.class);
-
-        when(cloudVendorRepository.findAll()).thenReturn(new ArrayList<CloudVendor>(Collections.singleton(cloudVendor)));
-
-        assertThat(cloudVendorService.getAllCloudVendors().get(0).getVendorPhoneNumber()).isEqualTo(cloudVendor.getVendorPhoneNumber());
-
-    }
-
 
 }

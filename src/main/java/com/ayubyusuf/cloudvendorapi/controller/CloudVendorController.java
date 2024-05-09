@@ -9,41 +9,48 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller for managing cloud vendor information.
+ */
 @RestController
 @RequestMapping("/cloudvendor")
 public class CloudVendorController {
-    CloudVendorService cloudVendorService;
+    private final CloudVendorService cloudVendorService;
 
     public CloudVendorController(CloudVendorService cloudVendorService) {
         this.cloudVendorService = cloudVendorService;
     }
 
+    // Retrieves details for a specific cloud vendor by ID
     @GetMapping("/{vendorId}")
     public ResponseEntity<Object> getCloudVendorDetails(@PathVariable("vendorId") String vendorId) {
         return ResponseHandler.responseBuilder("Requested Vendor Details are given here", HttpStatus.OK, cloudVendorService.getCloudVendor(vendorId));
     }
 
+    // Retrieves a list of all cloud vendors
     @GetMapping
     public List<CloudVendor> getAllCloudVendorDetails() {
         return cloudVendorService.getAllCloudVendors();
     }
 
+    // Creates a new cloud vendor entry
     @PostMapping
     public ResponseEntity<String> createCloudVendorDetails(@RequestBody CloudVendor cloudVendor) {
         cloudVendorService.createCloudVendor(cloudVendor);
         return ResponseEntity.ok("Cloud Vendor Created Successfully");
     }
 
+    // Updates an existing cloud vendor entry
     @PutMapping
     public ResponseEntity<String> updateCloudVendorDetails(@RequestBody CloudVendor cloudVendor) {
         cloudVendorService.updateCloudVendor(cloudVendor);
         return ResponseEntity.ok("Cloud Vendor Updated Successfully");
     }
 
-
+    // Deletes a cloud vendor by ID
     @DeleteMapping("/{vendorId}")
-    public String deleteCloudVendorDetails(@PathVariable("vendorId") String vendorId) {
+    public ResponseEntity<String> deleteCloudVendorDetails(@PathVariable("vendorId") String vendorId) {
         cloudVendorService.deleteCloudVendor(vendorId);
-        return "Cloud Vendor Deleted Successfully";
+        return ResponseEntity.ok("Cloud Vendor Deleted Successfully");
     }
 }

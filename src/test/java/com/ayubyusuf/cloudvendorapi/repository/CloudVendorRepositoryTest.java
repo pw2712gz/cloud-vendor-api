@@ -14,7 +14,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @DataJpaTest
 public class CloudVendorRepositoryTest {
 
-    // Given - When - Then
+    //  given - when - then
 
     CloudVendor cloudVendor;
     @Autowired
@@ -37,8 +37,8 @@ public class CloudVendorRepositoryTest {
     @Test
     void testFindByVendorName_Found() {
         List<CloudVendor> cloudVendorList = cloudVendorRepository.findByVendorName("Amazon");
-        assertThat(cloudVendorList.getFirst().getVendorId()).isEqualTo(cloudVendor.getVendorId());
-        assertThat(cloudVendorList.getFirst().getVendorAddress()).isEqualTo(cloudVendor.getVendorAddress());
+        assertThat(cloudVendorList.get(0).getVendorId()).isEqualTo(cloudVendor.getVendorId());
+        assertThat(cloudVendorList.get(0).getVendorAddress()).isEqualTo(cloudVendor.getVendorAddress());
     }
 
     // Test case FAILURE

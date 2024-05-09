@@ -1,5 +1,6 @@
 package com.ayubyusuf.cloudvendorapi.service.impl;
 
+
 import com.ayubyusuf.cloudvendorapi.exception.CloudVendorNotFoundException;
 import com.ayubyusuf.cloudvendorapi.model.CloudVendor;
 import com.ayubyusuf.cloudvendorapi.repository.CloudVendorRepository;
@@ -20,26 +21,25 @@ public class CloudVendorServiceImpl implements CloudVendorService {
     @Override
     public String createCloudVendor(CloudVendor cloudVendor) {
         cloudVendorRepository.save(cloudVendor);
-        return "Successfully created cloud vendor";
+        return "Success";
     }
 
     @Override
     public String updateCloudVendor(CloudVendor cloudVendor) {
         cloudVendorRepository.save(cloudVendor);
-        return "Successfully updated cloud vendor";
+        return "Success";
     }
 
     @Override
     public String deleteCloudVendor(String cloudVendorId) {
         cloudVendorRepository.deleteById(cloudVendorId);
-        return "Successfully deleted cloud vendor";
+        return "Success";
     }
 
     @Override
     public CloudVendor getCloudVendor(String cloudVendorId) {
-        if (cloudVendorRepository.findById(cloudVendorId).isEmpty()) {
+        if (cloudVendorRepository.findById(cloudVendorId).isEmpty())
             throw new CloudVendorNotFoundException("Requested Cloud Vendor does not exist");
-        }
         return cloudVendorRepository.findById(cloudVendorId).get();
     }
 
@@ -48,4 +48,8 @@ public class CloudVendorServiceImpl implements CloudVendorService {
         return cloudVendorRepository.findAll();
     }
 
+    @Override
+    public List<CloudVendor> getByVendorName(String vendorName) {
+        return cloudVendorRepository.findByVendorName(vendorName);
+    }
 }

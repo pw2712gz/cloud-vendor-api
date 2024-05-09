@@ -16,9 +16,11 @@ public class CloudVendorException {
     public String getMessage() {
         return message;
     }
+
     public Throwable getThrowable() {
         return throwable;
     }
+
     public HttpStatus getStatus() {
         return status;
     }

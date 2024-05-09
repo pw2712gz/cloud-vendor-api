@@ -1,23 +1,23 @@
 package com.ayubyusuf.cloudvendorapi.model;
 
-import jakarta.persistence.*;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
-@Table (name="cloud_vendor_info")
-public class CloudVendor{
-
+@Table(name = "cloud_vendor_info")
+public class CloudVendor {
     @Id
     private String vendorId;
     private String vendorName;
     private String vendorAddress;
     private String vendorPhoneNumber;
 
-
     public CloudVendor() {
-
     }
 
-    public CloudVendor(String vendorId, String vendorPhoneNumber, String vendorAddress, String vendorName) {
+    public CloudVendor(String vendorId, String vendorName, String vendorAddress, String vendorPhoneNumber) {
         this.vendorId = vendorId;
         this.vendorName = vendorName;
         this.vendorAddress = vendorAddress;
@@ -55,5 +55,4 @@ public class CloudVendor{
     public void setVendorPhoneNumber(String vendorPhoneNumber) {
         this.vendorPhoneNumber = vendorPhoneNumber;
     }
-
 }

@@ -11,40 +11,38 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cloudvendor")
-public class  CloudVendorController{
-
+public class CloudVendorController {
     CloudVendorService cloudVendorService;
 
-    CloudVendorController(CloudVendorService cloudVendorService){
+    public CloudVendorController(CloudVendorService cloudVendorService) {
         this.cloudVendorService = cloudVendorService;
     }
 
-    @GetMapping("{vendorId}")
-    public ResponseEntity<Object> getCloudVendorDetails(@PathVariable("vendorId") String vendorId){
-        return ResponseHandler.responseBuilder("Requested Vendor Details are given here", HttpStatus.OK, cloudVendorService.getCloudVendor(vendorId) );
+    @GetMapping("/{vendorId}")
+    public ResponseEntity<Object> getCloudVendorDetails(@PathVariable("vendorId") String vendorId) {
+        return ResponseHandler.responseBuilder("Requested Vendor Details are given here", HttpStatus.OK, cloudVendorService.getCloudVendor(vendorId));
     }
 
-    @GetMapping()
-    public List<CloudVendor> getAllCloudVendorDetails(){
+    @GetMapping("/")
+    public List<CloudVendor> getAllCloudVendorDetails() {
         return cloudVendorService.getAllCloudVendors();
     }
 
-    @PostMapping
-    public String createCloudVendorDetails(@RequestBody CloudVendor cloudVendor){
+    @PostMapping("/")
+    public String createCloudVendorDetails(@RequestBody CloudVendor cloudVendor) {
         cloudVendorService.createCloudVendor(cloudVendor);
-        return "Cloud vendor Created Successfully";
+        return "Cloud Vendor Created Successfully";
     }
 
-    @PutMapping
-    public String updateCloudVendorDetails(@RequestBody CloudVendor cloudVendor){
+    @PutMapping("/")
+    public String updateCloudVendorDetails(@RequestBody CloudVendor cloudVendor) {
         cloudVendorService.updateCloudVendor(cloudVendor);
-        return "Cloud vendor Updated Successfully";
+        return "Cloud Vendor Updated Successfully";
     }
 
-    @DeleteMapping("{vendorId}")
-    public String deleteCloudVendorDetails(@PathVariable("vendorId") String vendorId){
+    @DeleteMapping("/{vendorId}")
+    public String deleteCloudVendorDetails(@PathVariable("vendorId") String vendorId) {
         cloudVendorService.deleteCloudVendor(vendorId);
-        return "Cloud vendor Deleted Successfully";
+        return "Cloud Vendor Deleted Successfully";
     }
-
 }
